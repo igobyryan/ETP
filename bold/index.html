@@ -13,6 +13,11 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo">EcoTipping Points</a>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <ul class="nav-links">
                 <li><a href="#">Foundations</a></li>
                 <li class="has-dropdown">
@@ -28,7 +33,6 @@
                         </div>
                         <div class="dropdown-section">
                             <h4>Ingredients for Success</h4>
-                            <a href="ingredients-overview.html">Overview</a>
                             <a href="#">Outside stimulation and facilitation</a>
                             <a href="ingredient-shared-resolve.html">Shared community resolve</a>
                             <a href="#">Harmony between community and ecosystem</a>
@@ -47,6 +51,36 @@
             </ul>
         </div>
     </nav>
+
+    <script>
+        // Mobile menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        const dropdownToggles = document.querySelectorAll('.has-dropdown > a');
+        
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+        
+        // Mobile dropdown toggle
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    toggle.parentElement.classList.toggle('active');
+                }
+            });
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.navbar')) {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>
 
     <section class="hero">
         <div class="hero-content">
