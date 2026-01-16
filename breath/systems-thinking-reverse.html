@@ -13,6 +13,11 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo">EcoTipping Points</a>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <ul class="nav-links">
                 <li><a href="#">Foundations</a></li>
                 <li class="has-dropdown">
@@ -28,17 +33,17 @@
                         </div>
                         <div class="dropdown-section">
                             <h4>Ingredients for Success</h4>
-                            <a href="ingredients-overview.html">Overview</a>
-                            <a href="#">Outside stimulation and facilitation</a>
+                            
+                            <span style="color: var(--color-medium); padding: 0.5rem; display: block; cursor: default;">Outside stimulation and facilitation</span>
                             <a href="ingredient-shared-resolve.html">Shared community resolve</a>
-                            <a href="#">Harmony between community and ecosystem</a>
-                            <a href="#">Enduring commitment of local leadership</a>
-                            <a href="#">Letting nature do the work</a>
-                            <a href="#">Mobilizing community commitment</a>
-                            <a href="#">Overcoming social obstacles</a>
-                            <a href="#">Social and ecological diversity</a>
-                            <a href="#">Social and ecological memory</a>
-                            <a href="#">Building resilience</a>
+                            <span style="color: var(--color-medium); padding: 0.5rem; display: block; cursor: default;">Harmony between community and ecosystem</span>
+                            <span style="color: var(--color-medium); padding: 0.5rem; display: block; cursor: default;">Enduring commitment of local leadership</span>
+                            <span style="color: var(--color-medium); padding: 0.5rem; display: block; cursor: default;">Letting nature do the work</span>
+                            <span style="color: var(--color-medium); padding: 0.5rem; display: block; cursor: default;">Mobilizing community commitment</span>
+                            <span style="color: var(--color-medium); padding: 0.5rem; display: block; cursor: default;">Overcoming social obstacles</span>
+                            <span style="color: var(--color-medium); padding: 0.5rem; display: block; cursor: default;">Social and ecological diversity</span>
+                            <span style="color: var(--color-medium); padding: 0.5rem; display: block; cursor: default;">Social and ecological memory</span>
+                            <span style="color: var(--color-medium); padding: 0.5rem; display: block; cursor: default;">Building resilience</span>
                         </div>
                     </div>
                 </li>
@@ -68,6 +73,14 @@
 
     <div class="two-col">
         <div class="main-content">
+            <div class="callout" style="background-color: var(--color-accent-light); border-left-color: var(--color-accent);">
+                <h4 style="color: var(--color-accent); margin-bottom: var(--spacing-sm);">Tool Resources</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--spacing-md);">
+                    <li><a href="#" style="color: var(--color-dark); text-decoration: none; font-weight: 600;">↓ Evaluation Matrix (PDF)</a></li>
+                    <li><a href="#" style="color: var(--color-dark); text-decoration: none; font-weight: 600;">↓ Intervention Worksheet (PDF)</a></li>
+                </ul>
+            </div>
+
             <div class="content-block">
                 <h2>Breaking the Cycle</h2>
                 <p>Now that you understand the vicious cycles driving decline, it's time to identify where you can intervene to reverse them. The goal is to find actions that can break the negative feedback loops and start positive ones.</p>
@@ -220,13 +233,6 @@
                 </div>
             </div>
 
-            <div class="sidebar-box">
-                <h4>Downloads</h4>
-                <ul style="list-style: none; padding: 0;">
-                    <li style="margin-bottom: var(--spacing-xs);"><a href="#" style="color: var(--color-primary); text-decoration: none;">↓ Evaluation Matrix (PDF)</a></li>
-                    <li style="margin-bottom: var(--spacing-xs);"><a href="#" style="color: var(--color-primary); text-decoration: none;">↓ Intervention Worksheet (PDF)</a></li>
-                </ul>
-            </div>
         </aside>
     </div>
 
@@ -236,5 +242,34 @@
             <p>Transforming ecosystems through community-led systemic change.</p>
         </div>
     </footer>
+    <script>
+        // Mobile menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        const dropdownToggles = document.querySelectorAll('.has-dropdown > a');
+        
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+        
+        // Mobile dropdown toggle
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    toggle.parentElement.classList.toggle('active');
+                }
+            });
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.navbar')) {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>
