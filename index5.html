@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Lizard Point - Shows</title>
+    <style>
+        /* --- 1. CLEAN RESET --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #FAF5F0; color: #321411; padding: 40px; }
+
+        /* --- 2. TYPOGRAPHY --- */
+        h1 { font-size: 42px; margin-bottom: 60px; font-weight: 400; letter-spacing: -0.5px; }
+        h2 { font-size: 24px; margin-top: 60px; margin-bottom: 20px; font-weight: 400; border-bottom: 1px solid #321411; padding-bottom: 10px; }
+
+        /* --- 3. THE SHOWS GRID --- */
+        .show-list {
+            list-style: none;
+            width: 100%;
+            max-width: 1200px; /* Optional constraint */
+        }
+
+        .show-item {
+            display: grid;
+            /* THE GOLDEN GRID: Fixed Date | Equal City/Info */
+            grid-template-columns: 160px 1fr 1fr;
+            column-gap: 40px; /* Nice breathing room */
+            align-items: start;
+            
+            padding: 25px 0;
+            border-bottom: 1px solid rgba(50, 20, 17, 0.2); /* Subtle divider */
+            
+            /* Animation for loading */
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        
+        /* Remove border from last item if desired */
+        .show-item:last-child { border-bottom: none; }
+
+        /* --- 4. DATA COLUMNS --- */
+        .date {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .city {
+            font-size: 16px;
+            font-weight: 700; /* Bold as requested */
+            line-height: 1.4;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .type {
+            font-size: 16px;
+            font-weight: 400;
+            font-style: italic; /* Distinct style for type */
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        /* --- 5. MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            .show-item {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .date { opacity: 0.7; font-size: 14px; margin-bottom: 4px; }
+        }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+        
+        /* Loading State */
+        .loading { font-size: 14px; opacity: 0.5; padding: 20px 0; }
+    </style>
+</head>
+<body>
+
+    <h1>The Lizard Point</h1>
+
+    <section>
+        <h2>Upcoming</h2>
+        <div id="upcoming-container" class="show-list">
+            <div class="loading">Loading shows...</div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Past</h2>
+        <div id="past-container" class="show-list">
+            </div>
+    </section>
+
+    <script>
+        // --- CONFIGURATION ---
+        // 1. Set this to TRUE when you have your Google Sheet Link
+        const useGoogleSheet = true; 
+        
+        // 2. Paste your Google Sheet CSV Link here
+        const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZDoFIq_CsP_vk8RjcGTtXVEY6oIEn5MaH8vdZX-r4W1Kyn8Dx2rzBU9D40iBN14wkHACAi0v8CgHu/pub?gid=0&single=true&output=csv";
+
+        // --- DEMO DATA (Used if useGoogleSheet is false) ---
+        const localData = [
+            { date: "Apr 4, 2026", city: "Lausanne, Switzerland", title: "Books Books Books", type: "Literary Festival", status: "upcoming" },
+            { date: "Nov 8, 2025", city: "San Francisco, CA", title: "Originals Vinyl", type: "In-store performance", status: "past" },
+            { date: "Nov 1, 2025", city: "San Francisco, CA", title: "Audium", type: "Record release event", status: "past" }
+        ];
+
+        async function init() {
+            let shows = [];
+
+            if (useGoogleSheet) {
+                try {
+                    const response = await fetch(sheetURL);
+                    const text = await response.text();
+                    shows = parseCSV(text);
+                } catch (err) {
+                    console.error("CMS Error:", err);
+                    document.getElementById('upcoming-container').innerHTML = "Error loading shows.";
+                    return;
+                }
+            } else {
+                shows = localData; // Use local demo data
+            }
+
+            renderShows(shows);
+        }
+
+        // Simple CSV Parser (Handles the Google Sheet export)
+        function parseCSV(text) {
+            const rows = text.split('\n').slice(1); // Skip header row
+            return rows.map(row => {
+                // Split by comma, careful with quotes if needed
+                const cols = row.split(',');
+                if (cols.length < 4) return null;
+                
+                // You can add logic here to auto-detect "past" vs "upcoming" based on Date()
+                // For now, assuming column 5 is "status" or we calculate it.
+                return {
+                    date: cols[0].trim(),
+                    city: cols[1].trim(),
+                    title: cols[2].trim(),
+                    type: cols[3].trim(),
+                    status: "upcoming" // Default to upcoming for demo
+                };
+            }).filter(item => item);
+        }
+
+        function renderShows(shows) {
+            const upContainer = document.getElementById('upcoming-container');
+            const pastContainer = document.getElementById('past-container');
+            
+            // Clear loading
+            upContainer.innerHTML = '';
+            pastContainer.innerHTML = '';
+
+            shows.forEach(show => {
+                const html = `
+                    <li class="show-item">
+                        <div class="date">${show.date}</div>
+                        <div class="city">${show.city}</div>
+                        <div class="info">
+                            <div class="title">${show.title}</div>
+                            <div class="type">${show.type}</div>
+                        </div>
+                    </li>
+                `;
+
+                // Simple logic to sort buckets (you can refine this logic)
+                // For this demo, I'm manually putting the hardcoded ones in specific spots
+                // In a real version, we'd compare new Date(show.date) vs new Date()
+                if (show.status === 'past' || new Date(show.date) < new Date()) {
+                    pastContainer.innerHTML += html;
+                } else {
+                    upContainer.innerHTML += html;
+                }
+            });
+        }
+
+        // Run
+        init();
+    </script>
+</body>
+</html>
